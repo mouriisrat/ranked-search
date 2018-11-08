@@ -1,21 +1,27 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) {
 
         Scanner user_input = new Scanner(System.in);
-        String first_name, ln;
+        String first_name, ln, word;
+        int i;
         TfidfCalculation calculation = new TfidfCalculation();
 
-        ArrayList<HashMap<String, Double>> freq = new ArrayList<>();
+//        ArrayList<HashMap<String, Double>> freq = new ArrayList<>();
+        ArrayList<DocumentProperties> documentProperties = new ArrayList<>();
         while (true) {
-            HashMap<String, Integer> count = new HashMap<>();
 
             ln = user_input.nextLine();
             if (ln.equals("quit")) {
                 break;
             }
+
+            HashMap<String, Integer> count = new HashMap<>();
+            DocumentProperties docProperties = new DocumentProperties();
+
             String[] splitStr = ln.split("\\s+");
             for (String s : splitStr) {
 
@@ -24,15 +30,26 @@ public class Main {
                 } else {
                     count.put(s, 1);
                 }
-                // count.put(s, count.getOrDefault(s, 0) + 1);
+
             }
 
-            freq.add(calculation.calculateTermFrequency(count));
+            docProperties.setWordCountMap(count);
+
+            docProperties.setTermFreqMap(calculation.calculateTermFrequency(count));
+            documentProperties.add(docProperties);
+
         }
 
-        for (HashMap<String, Double> tf : freq) {
-            tf.forEach((key, value) -> System.out.println(key + ": " + value));
-            System.out.println();
-        }
+        HashMap<String,Double> inverseDocFreqMap = calculation.calculateInverseDocFrequency(documentProperties.toArray(new DocumentProperties[0]));
+
+
+        inverseDocFreqMap.forEach((key, value) -> System.out.println(key + ": " + value));
+        System.out.println(documentProperties.size());
+
+        i = user_input.nextInt();
+        word = user_input.next();
+        double tfIdf=documentProperties.get(i).getTermFreqMap().get(word)*inverseDocFreqMap.get(word);
+        System.out.println(tfIdf);
+
     }
 }

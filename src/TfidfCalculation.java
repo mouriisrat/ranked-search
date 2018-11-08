@@ -39,24 +39,22 @@ class DocumentProperties{
 
 public class TfidfCalculation {
 
-    SortedSet<String> wordList = new TreeSet(String.CASE_INSENSITIVE_ORDER);
-
     //Calculates inverse Doc frequency.
     public HashMap<String,Double> calculateInverseDocFrequency(DocumentProperties [] docProperties)
     {
 
         HashMap<String,Double> InverseDocFreqMap = new HashMap<>();
+        SortedSet<String> wordList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        Arrays.stream(docProperties).map(DocumentProperties::getWordCountMap).map(Map::keySet).forEach(wordList::addAll);
+
         int size = docProperties.length;
         double wordCount ;
         for (String word : wordList) {
             wordCount = 0;
-            for(int i=0;i<size;i++)
-            {
-                HashMap<String,Integer> tempMap = docProperties[i].getWordCountMap();
-                if(tempMap.containsKey(word))
-                {
+            for (DocumentProperties docProperty : docProperties) {
+                HashMap<String, Integer> tempMap = docProperty.getWordCountMap();
+                if (tempMap.containsKey(word)) {
                     wordCount++;
-                    continue;
                 }
             }
             double temp = size/ wordCount;
@@ -147,7 +145,7 @@ public class TfidfCalculation {
                     {
                         continue;
                     }
-                    wordList.add(term);
+//                    wordList.add(term);
                     if(WordCount.containsKey(term))
                     {
                         WordCount.put(term,WordCount.get(term)+1);
