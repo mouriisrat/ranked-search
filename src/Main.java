@@ -53,9 +53,10 @@ public class Main {
         double tfIdf=documentProperties.get(i).getTermFreqMap().get(word)*inverseDocFreqMap.get(word);
         System.out.println(tfIdf);
 */
-        double maximum=0.0;
-        int documentNo=0;
+
         while (true) {
+            double maximum=0.0;
+            int documentNo=0;
             word = user_input.next();
             if(word.equals("quit"))
                 break;
