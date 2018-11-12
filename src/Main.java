@@ -97,6 +97,7 @@ public class Main {
 */
 
         for (int j = 0; j < documentProperties.size(); j++) {
+            sum=0.0;
             for (String s : splitStr) {
                 tfIdfOfWord = documentProperties.get(j).getTermFreqMap().getOrDefault(s, 0.0) * inverseDocFreqMap.getOrDefault(s, 0.0);
                 sum=sum+ tfIdfOfWord;
