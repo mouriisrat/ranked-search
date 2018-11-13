@@ -2,7 +2,7 @@
 public class BinarySearchTree {
 
     /* Class containing left and right child of current node and key value*/
-    class Node {
+    static class Node {
         int key;
         Node left, right;
 
