@@ -3,7 +3,7 @@ public class BinarySearchTree {
 
     /* Class containing left and right child of current node and key value*/
     static class Node {
-        int key;
+        int key, id;
         Node left, right;
 
         public Node(int item) {
@@ -21,7 +21,8 @@ public class BinarySearchTree {
     }
 
     // This method mainly calls insertRec()
-    void insert(int key) {
+    void insert(int key)
+    {
         root = insertRec(root, key);
     }
 

@@ -6,9 +6,12 @@ public class BinaryIndexTree {
 
     BinaryIndexTree(List<Integer> data) {
         ArrayList<BinarySearchTree.Node> listOfNode= new ArrayList<>();
-
+        int j = 1;
         for(int i:data){
-           listOfNode.add(new BinarySearchTree.Node(i));
+            BinarySearchTree.Node node = new BinarySearchTree.Node(i);
+            node.id = j;
+            j++;
+            listOfNode.add(node);
            System.out.print(listOfNode.get(listOfNode.size()-1).key + " ");
         }
 
@@ -34,8 +37,8 @@ public class BinaryIndexTree {
                 }
             }
 
-            for(int j=0;j<temp.size();j++){
-                System.out.print(temp.get(j).key+" ");
+            for(int k=0;k<temp.size();k++){
+                System.out.print(temp.get(k).key+" ");
             }
 
             System.out.println();
@@ -47,8 +50,26 @@ public class BinaryIndexTree {
         root = listOfNode.get(0);
     }
 
+    BinarySearchTree.Node findMaxId() {
+        return findMaxId(root);
+    }
+
+    BinarySearchTree.Node findMaxId(BinarySearchTree.Node root) {
+
+        if(root.left==null && root.right==null)
+            return root;
+        else if(root.right==null || root.left.key>root.right.key)
+            root = root.left;
+        else
+            root= root.right;
+
+        return findMaxId(root);
+    }
+
 
     public static void main(String[] args) {
-        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(30, 20, 10, 25, 40, 60 , 30));
+        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(10, 20, 10, 25, 20, 5 , 30));
+        BinarySearchTree.Node r = bit.findMaxId();
+        System.out.printf("Maximum node's key is %d and id %d.", r.key, r.id);
     }
 }
