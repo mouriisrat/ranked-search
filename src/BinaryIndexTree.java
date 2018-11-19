@@ -66,10 +66,92 @@ public class BinaryIndexTree {
         return findMaxId(root);
     }
 
+    BinarySearchTree.Node findEvenMaxId() {
+        return findEvenMaxId(root);
+    }
+
+    BinarySearchTree.Node findEvenMaxId(BinarySearchTree.Node root) {
+
+        if(root.left==null && root.right==null)
+            return root;
+
+            BinarySearchTree.Node left = findEvenMaxId(root.left);
+            BinarySearchTree.Node right = findEvenMaxId(root.right);
+
+
+            if(right.key%2==0 && left.key%2==0){
+                if(left.key>right.key)
+                    return left;
+                else
+                    return right;
+            }
+
+            else if(right.key%2==0){
+                return right;
+            }
+            else if (left.key%2==0){
+                return left;
+            }
+            else return new BinarySearchTree.Node(-10000000);
+
+
+    }
+
+
+    int sumOfNodes() {
+       return sumOfNodes(root);
+    }
+
+    int sumOfNodes(BinarySearchTree.Node root) {
+        if (root != null) {
+            return sumOfNodes(root.left) + root.key + sumOfNodes(root.right);
+        }
+        else return 0;
+    }
+    BinarySearchTree.Node findKNumber(int k) {
+
+        return findKNumber(root,k);
+    }
+
+    BinarySearchTree.Node findKNumber(BinarySearchTree.Node root,int k ) {
+
+        if(root!=null) {
+            BinarySearchTree.Node left = findKNumber(root.left, k);
+            BinarySearchTree.Node right = findKNumber(root.right, k);
+            int a = Math.abs(left.key - k);
+            int b = Math.abs(root.key - k);
+            int c = Math.abs(right.key - k);
+
+            int smallest = a;
+            if (smallest > b) {
+                smallest = b;
+            }
+            if (smallest > c) {
+                smallest = c;
+            }
+
+            if(a == smallest) return left;
+            if(b == smallest) return root;
+            if(c == smallest) return right;
+        }
+        return new BinarySearchTree.Node(100000000);
+    }
+
+
 
     public static void main(String[] args) {
-        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(10, 20, 10, 25, 20, 5 , 30));
+        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(30, 45, 10, 62));
         BinarySearchTree.Node r = bit.findMaxId();
-        System.out.printf("Maximum node's key is %d and id %d.", r.key, r.id);
+        System.out.printf("Maximum node's key is %d and id %d.\n", r.key, r.id);
+
+        BinarySearchTree.Node maxEvenNode = bit.findEvenMaxId();
+        System.out.printf("Maximum even node's key is %d and id %d.\n", maxEvenNode.key, maxEvenNode.id);
+
+        System.out.println("the sum of all nodes "+bit.sumOfNodes());
+        Scanner user_input = new Scanner(System.in);
+        System.out.println("input a number to find its nearest number " );
+        int a=user_input.nextInt();
+        System.out.println("the nearest number is : "+ bit.findKNumber(a).key);
+
     }
 }
