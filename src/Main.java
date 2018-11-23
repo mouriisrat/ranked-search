@@ -6,6 +6,17 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner user_input = new Scanner(System.in);
+        PriorityQueue<BinarySearchTree.Node> q = new PriorityQueue<>(Comparator.comparingInt(a -> a.key));
+        q.add(new BinarySearchTree.Node(45));
+        q.add(new BinarySearchTree.Node(20));
+        q.add(new BinarySearchTree.Node(55));
+        q.add(new BinarySearchTree.Node(50));
+        System.out.println(q);
+        System.out.println(q.peek() + " " + q.size());
+        System.out.println(q.poll() + " " + q.size());
+        System.out.println(q.peek() + " " + q.size());
+
+
         String first_name, ln, word;
         int i;
         TfidfCalculation calculation = new TfidfCalculation();

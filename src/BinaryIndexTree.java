@@ -12,7 +12,7 @@ public class BinaryIndexTree {
             node.id = j;
             j++;
             listOfNode.add(node);
-           System.out.print(listOfNode.get(listOfNode.size()-1).key + " ");
+            System.out.print(listOfNode.get(listOfNode.size()-1).key + " ");
         }
 
         System.out.println();
@@ -66,40 +66,45 @@ public class BinaryIndexTree {
         return findMaxId(root);
     }
 
+    int count=0;
     BinarySearchTree.Node findEvenMaxId() {
         return findEvenMaxId(root);
     }
 
     BinarySearchTree.Node findEvenMaxId(BinarySearchTree.Node root) {
 
+        count++;
         if(root.left==null && root.right==null)
             return root;
+        else if(root.right==null)
+            return findEvenMaxId(root.left);
 
-            BinarySearchTree.Node left = findEvenMaxId(root.left);
-            BinarySearchTree.Node right = findEvenMaxId(root.right);
+        BinarySearchTree.Node left = findEvenMaxId(root.left);
+        if(left.key>=root.right.key)
+            return left;
+        BinarySearchTree.Node right = findEvenMaxId(root.right);
 
-
-            if(right.key%2==0 && left.key%2==0){
-                if(left.key>right.key)
-                    return left;
-                else
-                    return right;
-            }
-
-            else if(right.key%2==0){
-                return right;
-            }
-            else if (left.key%2==0){
+        if(right.key%2==0 && left.key%2==0){
+            if(left.key>right.key)
                 return left;
-            }
-            else return new BinarySearchTree.Node(-10000000);
+            else
+                return right;
+        }
+
+        else if(right.key%2==0){
+            return right;
+        }
+        else if (left.key%2==0){
+            return left;
+        }
+        else return new BinarySearchTree.Node(-10000000);
 
 
     }
 
 
     int sumOfNodes() {
-       return sumOfNodes(root);
+        return sumOfNodes(root);
     }
 
     int sumOfNodes(BinarySearchTree.Node root) {
@@ -138,20 +143,63 @@ public class BinaryIndexTree {
     }
 
 
+    void findTwoLargestNumber()
+    {
+        findTwoLargestNumber(root);
+    }
 
+    ArrayList<BinarySearchTree.Node> K= new ArrayList<>();
+    int countKLargestNumber=0;
+
+    void findTwoLargestNumber(BinarySearchTree.Node root){
+
+        countKLargestNumber++;
+
+        if(root.left==null && root.right==null){
+            if(K.size()<=1)
+                K.add(root);
+            else if(root.key>K.get(0).key && root.key<K.get(1).key)
+                K.set(0,root);
+            else if(root.key<K.get(0).key && root.key>K.get(1).key)
+                K.set(1,root);
+            else if(root.key>K.get(0).key && root.key>K.get(1).key){
+                if(K.get(0).key>K.get(1).key)
+                    K.set(1,root);
+                else
+                    K.set(0,root);
+            }
+            return;
+        }
+
+        else
+        {
+            if(root.left!=null) findTwoLargestNumber(root.left);
+            if((root.right!=null) && (K.size()<2 || root.key>Math.min(K.get(0).key, K.get(1).key))) findTwoLargestNumber(root.right);
+        }
+    }
     public static void main(String[] args) {
-        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(30, 45, 10, 62));
+        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(50, 29, 20, 10, 60, 90, 55, 52));
         BinarySearchTree.Node r = bit.findMaxId();
         System.out.printf("Maximum node's key is %d and id %d.\n", r.key, r.id);
 
         BinarySearchTree.Node maxEvenNode = bit.findEvenMaxId();
         System.out.printf("Maximum even node's key is %d and id %d.\n", maxEvenNode.key, maxEvenNode.id);
+        System.out.println("the number of function called "+bit.count);
 
         System.out.println("the sum of all nodes "+bit.sumOfNodes());
         Scanner user_input = new Scanner(System.in);
         System.out.println("input a number to find its nearest number " );
         int a=user_input.nextInt();
         System.out.println("the nearest number is : "+ bit.findKNumber(a).key);
+        bit.findTwoLargestNumber();
+        for (BinarySearchTree.Node e:bit.K)
+        {
+            System.out.println("the 2 largest numbers are "+ e.key);
+        }
+        System.out.println("the number of findTwoLargestNumber called " + bit.countKLargestNumber);
+
+
+
 
     }
 }

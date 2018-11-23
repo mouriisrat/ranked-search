@@ -10,6 +10,11 @@ public class BinarySearchTree {
             key = item;
             left = right = null;
         }
+
+        @Override
+        public String toString() {
+            return "key = " + key + " id = " + id;
+        }
     }
 
     // Root of BST
