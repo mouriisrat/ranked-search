@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class BinaryIndexTree {
     BinarySearchTree.Node root;
@@ -177,9 +179,43 @@ public class BinaryIndexTree {
             if((root.right!=null) && (K.size()<2 || root.key>Math.min(K.get(0).key, K.get(1).key))) findTwoLargestNumber(root.right);
         }
     }
+
+    PriorityQueue<BinarySearchTree.Node> q = new PriorityQueue<>(Comparator.comparingInt(a -> a.key));
+
+    void findKLargestNumber(int k)
+    {
+        findKLargestNumber(root, k);
+    }
+    void findKLargestNumber(BinarySearchTree.Node root, int k){
+
+
+        if(root.left==null && root.right==null){
+            if(q.size()<=k-1)
+                q.add(root);
+            else if(root.key>q.peek().key){
+                q.poll();
+                q.add(root);
+            }
+            return;
+        }
+
+        else
+        {
+            if(root.left!=null)
+                findKLargestNumber(root.left, k);
+            if((root.right!=null) && (q.size()<k || root.key>q.peek().key))
+                findKLargestNumber(root.right, k);
+        }
+
+
+    }
+
+
+
     public static void main(String[] args) {
-        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(50, 29, 20, 10, 60, 90, 55, 52));
-        BinarySearchTree.Node r = bit.findMaxId();
+        BinaryIndexTree bit = new BinaryIndexTree(Arrays.asList(50, 29, 20, 10, 60, 90, 55, 52, 45, 70, 33, 45, 567, 1, 34, 56, 78));
+        Scanner user_input = new Scanner(System.in);
+        /*BinarySearchTree.Node r = bit.findMaxId();
         System.out.printf("Maximum node's key is %d and id %d.\n", r.key, r.id);
 
         BinarySearchTree.Node maxEvenNode = bit.findEvenMaxId();
@@ -192,14 +228,15 @@ public class BinaryIndexTree {
         int a=user_input.nextInt();
         System.out.println("the nearest number is : "+ bit.findKNumber(a).key);
         bit.findTwoLargestNumber();
-        for (BinarySearchTree.Node e:bit.K)
-        {
+        for (BinarySearchTree.Node e:bit.K){
             System.out.println("the 2 largest numbers are "+ e.key);
         }
         System.out.println("the number of findTwoLargestNumber called " + bit.countKLargestNumber);
-
-
-
-
+        System.out.println("input k to find k largest numbers " );*/
+//        int k=user_input.nextInt();
+       for(int k=1;k<17;k++) {
+           bit.findKLargestNumber(k);
+           System.out.println("the " +k+ " largest numbers are " + Arrays.toString(IntStream.range(0, bit.q.size()).mapToObj(i -> bit.q.poll()).toArray()));
+       }
     }
 }

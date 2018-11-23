@@ -13,7 +13,7 @@ public class BinarySearchTree {
 
         @Override
         public String toString() {
-            return "key = " + key + " id = " + id;
+            return "{ key = " + key + " id = " + id + "}";
         }
     }
 
