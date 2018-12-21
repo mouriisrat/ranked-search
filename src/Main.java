@@ -1,31 +1,23 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
         Scanner user_input = new Scanner(System.in);
-        PriorityQueue<BinarySearchTree.Node> q = new PriorityQueue<>(Comparator.comparingInt(a -> a.key));
-        q.add(new BinarySearchTree.Node(45));
-        q.add(new BinarySearchTree.Node(20));
-        q.add(new BinarySearchTree.Node(55));
-        q.add(new BinarySearchTree.Node(50));
-        System.out.println(q);
-        System.out.println(q.peek() + " " + q.size());
-        System.out.println(q.poll() + " " + q.size());
-        System.out.println(q.peek() + " " + q.size());
-
+        Scanner file_input = new Scanner(new File("input.txt"));
 
         String first_name, ln, word;
         int i;
         TfidfCalculation calculation = new TfidfCalculation();
-
-//        ArrayList<HashMap<String, Double>> freq = new ArrayList<>();
+//      ArrayList<HashMap<String, Double>> freq = new ArrayList<>();
         ArrayList<DocumentProperties> documentProperties = new ArrayList<>();
         while (true) {
 
-            ln = user_input.nextLine();
+            ln = file_input.nextLine();
             if (ln.equals("quit")) {
                 break;
             }
@@ -46,6 +38,8 @@ public class Main {
 
             docProperties.setWordCountMap(count);
 
+            //printing tf map for each line
+            System.out.println("TF map of the entered line ");
             docProperties.setTermFreqMap(calculation.calculateTermFrequency(count));
             docProperties.getTermFreqMap().forEach((key, value) -> System.out.println(key + ": " + value));
 
@@ -54,75 +48,30 @@ public class Main {
         }
 
 
-        HashMap<String,Double> inverseDocFreqMap = calculation.calculateInverseDocFrequency(documentProperties.toArray(new DocumentProperties[0]));
+        //passing the tf maps of documents to a function to create leaf nodes and tree
+        ArrayList<HashMap<String, Double>> listOfTf = new ArrayList<>();
+        for(int j=0;j<documentProperties.size();j++){
+            listOfTf.add(documentProperties.get(j).getTermFreqMap());
+        }
+        System.out.println("Binary index tree of the entered documents");
+        SearchTreeWithTFIDF indexTree=new SearchTreeWithTFIDF(listOfTf);
 
+        //creating and printing idf map
+        System.out.println("IDF map of the documents");
+        HashMap<String,Double> inverseDocFreqMap = calculation.calculateInverseDocFrequency(documentProperties.toArray(new DocumentProperties[0]));
         inverseDocFreqMap.forEach((key, value) -> System.out.println(key + ": " + value));
         System.out.println(documentProperties.size());
 
-        //finding the importance of a word in a specific document
-
-        /*i = user_input.nextInt();
-        word = user_input.next();
-        double tfIdf=documentProperties.get(i).getTermFreqMap().get(word)*inverseDocFreqMap.get(word);
-        System.out.println(tfIdf);
-        */
-
-        //Single word search
-        while (true) {
-            double maximumForSingle=0.0;
-            int documentNoForSingle=0;
-            word = user_input.next();
-            if(word.equals("quit"))
-                break;
-            for (int j = 0; j < documentProperties.size(); j++) {
-                double tfIdfOfWord = documentProperties.get(j).getTermFreqMap().getOrDefault(word, 0.0) * inverseDocFreqMap.getOrDefault(word, 0.0);
-                System.out.println(tfIdfOfWord);
-                if (tfIdfOfWord > maximumForSingle) {
-                    maximumForSingle = tfIdfOfWord;
-                    documentNoForSingle = j + 1;
-                }
-
-
-            }
-
-            System.out.println("document returned for single keyword is " + documentNoForSingle);
-       }
-
-
-       //multi keyword search
+        //multi keyword search that returns a single document
         String searchQuery;
-        searchQuery = user_input.nextLine();
-        String[] splitStr = searchQuery.split("\\s+");
-        double maximum=0.0, tfIdfOfWord, sum=0.0;
-        int documentNo=0;
-
-/*      double idfOfsearchQuery,
-        HashMap<String, Double> idfMapOfsearchQuery  = new HashMap<>();
-        for (String s : splitStr) {
-
-         idfOfsearchQuery= inverseDocFreqMap.getOrDefault(s,0.0);
-         idfMapOfsearchQuery.put(s, idfOfsearchQuery);
-
+        System.out.println("Enter a search query");
+        while (user_input.hasNext()){
+            searchQuery = user_input.nextLine();
+            String[] splitStr = searchQuery.split("\\s+");
+            indexTree.findMaxOfSearchQuery(splitStr, inverseDocFreqMap);
+            System.out.println("maximum nodes id for this query is " + indexTree.documentId);
+            System.out.println("Enter a search query");
         }
-        idfMapOfsearchQuery.forEach((key, value) -> System.out.println(key + ": " + value));
-*/
-
-        for (int j = 0; j < documentProperties.size(); j++) {
-            sum=0.0;
-            for (String s : splitStr) {
-                tfIdfOfWord = documentProperties.get(j).getTermFreqMap().getOrDefault(s, 0.0) * inverseDocFreqMap.getOrDefault(s, 0.0);
-                sum=sum+ tfIdfOfWord;
-            }
-            if (sum > maximum) {
-                maximum = sum;
-                documentNo = j + 1;
-            }
-            System.out.println("tfIdf for document " + documentNo + " is " + sum);
-
-        }
-        System.out.println("document returned for this query is" +documentNo);
-
-
 
 
     }
