@@ -81,12 +81,14 @@ public class SearchTreeWithTFIDF {
 
     void findMaxOfSearchQuery(String[] splitStr, HashMap<String, Double> inverseDocFreqMap ) {
         maximum=0;
-        tfIdfOfWord=0;
         documentId=0;
         findMaxOfSearchQuery(root, splitStr, inverseDocFreqMap);
     }
 
-    double maximum=0, tfIdfOfWord=0;
+    void findKMaxOfSearchQuery(String[] splitStr, HashMap<String, Double> inverseDocFreqMap , int k) {
+        findKMaxOfSearchQuery(root, splitStr, inverseDocFreqMap, k);
+    }
+    double maximum=0;
     int documentId=0;
 
     void findMaxOfSearchQuery(Node root, String[] splitStr, HashMap<String, Double> inverseDocFreqMap) {
@@ -95,7 +97,7 @@ public class SearchTreeWithTFIDF {
         if(root.left==null && root.right==null){
             double sum = 0;
             for (String s : splitStr) {
-               tfIdfOfWord = root.key.getOrDefault(s, 0.0) * inverseDocFreqMap.getOrDefault(s, 0.0);
+               double tfIdfOfWord = root.key.getOrDefault(s, 0.0) * inverseDocFreqMap.getOrDefault(s, 0.0);
                sum = sum + tfIdfOfWord;
             }
             if (sum > maximum) {
@@ -116,4 +118,34 @@ public class SearchTreeWithTFIDF {
         }
     }
 
+    PriorityQueue<Map.Entry<Double, Integer>> q = new PriorityQueue<>(Comparator.comparingDouble(Map.Entry::getKey));
+    int functionCalled = 0;
+    void findKMaxOfSearchQuery(Node root, String[] splitStr, HashMap<String, Double> inverseDocFreqMap, int k) {
+
+        functionCalled++;
+        if(root.left==null && root.right==null){
+            double sum = 0, tfIdfOfWord;
+            for (String s : splitStr) {
+                tfIdfOfWord = root.key.getOrDefault(s, 0.0) * inverseDocFreqMap.getOrDefault(s, 0.0);
+                sum = sum + tfIdfOfWord;
+            }
+
+                if(q.size()<=k-1)
+                    q.add(Map.entry(sum, root.id));
+                else if(sum>q.peek().getKey()){
+                    q.poll();
+                    q.add(Map.entry(sum, root.id));
+                }
+
+            }
+
+        else
+
+        {
+            if(root.left!=null)
+                findKMaxOfSearchQuery(root.left, splitStr, inverseDocFreqMap, k);
+            if((root.right!=null))
+                findKMaxOfSearchQuery(root.right, splitStr, inverseDocFreqMap, k);
+        }
+    }
 }

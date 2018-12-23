@@ -64,13 +64,37 @@ public class Main {
 
         //multi keyword search that returns a single document
         String searchQuery;
-        System.out.println("Enter a search query");
+        /*System.out.println("Enter a search query");
         while (user_input.hasNext()){
             searchQuery = user_input.nextLine();
+            if (searchQuery.equals("quit")) {
+                break;
+            }
             String[] splitStr = searchQuery.split("\\s+");
             indexTree.findMaxOfSearchQuery(splitStr, inverseDocFreqMap);
             System.out.println("maximum nodes id for this query is " + indexTree.documentId);
             System.out.println("Enter a search query");
+        }
+*/
+        int k;
+        System.out.println("Enter a search query to find k results: ");
+
+        while (user_input.hasNext()){
+            searchQuery = user_input.nextLine();
+            if (searchQuery.equals("quit")) {
+                break;
+            }
+            k = user_input.nextInt();
+            user_input.nextLine();
+            String[] splitStr = searchQuery.split("\\s+");
+            indexTree.findKMaxOfSearchQuery(splitStr, inverseDocFreqMap, k);
+            System.out.print("maximum nodes id for this query is: ");
+            while (!indexTree.q.isEmpty()){
+                System.out.print(indexTree.q.poll().getValue()+ "   ");
+            }
+            System.out.println();
+            System.out.println("Enter a search query to find k results: ");
+
         }
 
 
