@@ -132,8 +132,11 @@ public class SearchTreeWithTFIDF {
                 sum = sum + tfIdfOfWord;
             }
 
-                if(q.size()<=k-1)
-                    q.add(Map.entry(sum, root.id));
+                if(q.size()<=k-1){
+                    if(sum>1e-8)
+                        q.add(Map.entry(sum, root.id));
+
+                }
                 else if(sum>q.peek().getKey()){
                     q.poll();
                     q.add(Map.entry(sum, root.id));
@@ -144,13 +147,15 @@ public class SearchTreeWithTFIDF {
         else
 
         {
-            if(root.left!=null)
-                findKMaxOfSearchQuery(root.left, splitStr, inverseDocFreqMap, k);
             double tfIdfOfWord, sum=0;
             for (String s : splitStr) {
                 tfIdfOfWord = root.key.getOrDefault(s, 0.0) * inverseDocFreqMap.getOrDefault(s, 0.0);
                 sum = sum + tfIdfOfWord;
             }
+
+            if((root.left!=null)&& (q.size()<k || sum>q.peek().getKey()))
+                findKMaxOfSearchQuery(root.left, splitStr, inverseDocFreqMap, k);
+
             if((root.right!=null) && (q.size()<k || sum>q.peek().getKey()))
                 findKMaxOfSearchQuery(root.right, splitStr, inverseDocFreqMap, k);
         }

@@ -89,6 +89,8 @@ public class Main {
             String[] splitStr = searchQuery.split("\\s+");
             indexTree.findKMaxOfSearchQuery(splitStr, inverseDocFreqMap, k);
             System.out.print("maximum nodes id for this query is: ");
+            if(indexTree.q.isEmpty())
+                System.out.println("No document matches your query ");
             while (!indexTree.q.isEmpty()){
                 System.out.print(indexTree.q.poll().getValue()+ "   ");
             }
