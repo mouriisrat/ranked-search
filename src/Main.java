@@ -93,6 +93,7 @@ public class Main {
                 System.out.print(indexTree.q.poll().getValue()+ "   ");
             }
             System.out.println();
+            System.out.println("Number of findKMaxOfSearchQuery function called " + indexTree.functionCalled);
             System.out.println("Enter a search query to find k results: ");
 
         }

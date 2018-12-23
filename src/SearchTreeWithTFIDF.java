@@ -86,7 +86,9 @@ public class SearchTreeWithTFIDF {
     }
 
     void findKMaxOfSearchQuery(String[] splitStr, HashMap<String, Double> inverseDocFreqMap , int k) {
+        functionCalled = 0;
         findKMaxOfSearchQuery(root, splitStr, inverseDocFreqMap, k);
+
     }
     double maximum=0;
     int documentId=0;
@@ -144,7 +146,12 @@ public class SearchTreeWithTFIDF {
         {
             if(root.left!=null)
                 findKMaxOfSearchQuery(root.left, splitStr, inverseDocFreqMap, k);
-            if((root.right!=null))
+            double tfIdfOfWord, sum=0;
+            for (String s : splitStr) {
+                tfIdfOfWord = root.key.getOrDefault(s, 0.0) * inverseDocFreqMap.getOrDefault(s, 0.0);
+                sum = sum + tfIdfOfWord;
+            }
+            if((root.right!=null) && (q.size()<k || sum>q.peek().getKey()))
                 findKMaxOfSearchQuery(root.right, splitStr, inverseDocFreqMap, k);
         }
     }
